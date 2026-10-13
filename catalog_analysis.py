@@ -222,3 +222,51 @@ def total_duration_above_rating(movies, min_rating=7):
         for movie in movies
         if movie["rating"] > min_rating
     )
+
+# Итоговый 9 этап
+
+
+def build_report(movies):
+    print("ОТЧЕТ ПО КАТАЛОГУ:\n")
+
+    avg_rating = average_rating(movies)
+    print(f"Средний рейтинг: {avg_rating}\n")
+
+    oldest, newest, avg_age = catalog_age_stats(movies)
+    print(f"Средний возраст фильмов: {avg_age} лет\n")
+
+    print("\nТоп-3 фильма:\n")
+
+    top_movies = top_n_by_rating(movies, 3)
+
+    for title, rating in top_movies:
+        movie = next(movie for movie in movies if movie["title"] == title)
+
+        normalized_title = normalize_title(title)
+        year = movie["year"]
+        duration = duration_in_hours(movie["duration_min"])
+        genres = ", ".join(sorted(movie["genres"]))
+
+        print(
+            f'  "{normalized_title}" ({year}) — {rating}/10, '
+            f'{duration}, жанры: {genres}'
+        )
+
+    print("\nФильмов по жанрам:\n")
+
+    genre_counts = count_by_genre(movies)
+    sorted_genres = sorted(
+        genre_counts.items(),
+        key=lambda item: (-item[1], item[0])
+    )
+
+    for genre, count in sorted_genres:
+        print(f"  {genre} — {count}")
+
+    print("\nВсе жанры каталога:\n")
+
+    genres = sorted(all_genres(movies))
+    print(", ".join(genres))
+
+
+build_report(movies)
